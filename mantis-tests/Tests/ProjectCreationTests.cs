@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace mantis_tests
 {
@@ -22,9 +23,21 @@ namespace mantis_tests
             applicationManager.LoginHelper.Login(admin);
             applicationManager.MainMenuHelper.SwitchToManageTab();
             applicationManager.ManagementMenuHelper.SwitchToManageProjectsTab();
+
+            if (applicationManager.ProjectManagementHelper.Exists(project))
+                applicationManager.ProjectManagementHelper.Delete(project);
+
+            List<ProjectData> initialProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+
             applicationManager.ProjectManagementHelper.Create(project);
 
-            Assert.IsTrue(applicationManager.ProjectManagementHelper.Exists(project));
+            List<ProjectData> modifiedProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+
+            initialProjectList.Add(project);
+            initialProjectList.Sort();
+            modifiedProjectList.Sort();
+
+            Assert.AreEqual(initialProjectList, modifiedProjectList);
         }
     }
 }

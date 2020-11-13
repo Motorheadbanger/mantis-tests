@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace mantis_tests
@@ -15,9 +13,6 @@ namespace mantis_tests
 
         public void Create(ProjectData project)
         {
-            if (Exists(project))
-                Delete(project);
-
             driver.FindElement(By.XPath("//form[@action='manage_proj_create_page.php']")).Click();
             driver.FindElement(By.Id("project-name")).SendKeys(project.Name);
             driver.FindElement(By.CssSelector("input.btn")).Click();
@@ -26,12 +21,13 @@ namespace mantis_tests
 
         public void Delete(ProjectData project)
         {
-            if (!Exists(project))
-                Create(project);
+            List<ProjectData> list = GetProjectList();
 
-            Dictionary<string, string> projectList = GetProjectList();
+            foreach (ProjectData item in list)
+                if (item.Name == project.Name)
+                    project.Id = item.Id;
 
-            driver.FindElement(By.XPath("//a[@href='manage_proj_edit_page.php?project_id=" + projectList[project.Name] + "']")).Click();
+            driver.FindElement(By.XPath("//a[@href='manage_proj_edit_page.php?project_id=" + project.Id + "']")).Click();
             driver.FindElement(By.XPath("//input[@value='Delete Project']")).Click();
             driver.FindElement(By.XPath("//input[@value='Delete Project']")).Click();
             Thread.Sleep(500);
@@ -39,19 +35,23 @@ namespace mantis_tests
 
         public bool Exists(ProjectData project)
         {
-            Dictionary<string, string> projectList = GetProjectList();
+            List<ProjectData> projectList = GetProjectList();
 
-            return projectList.ContainsKey(project.Name);
+            return projectList.Contains(project);
         }
 
-        private Dictionary<string, string> GetProjectList()
+        public List<ProjectData> GetProjectList()
         {
-            Dictionary<string, string> list = new Dictionary<string, string>();
-            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//a[contains(@href, 'manage_proj_edit_page.php')]"));
+            List<ProjectData> list = new List<ProjectData>();
+            IList<IWebElement> elements = driver.FindElements(By.XPath("//a[contains(@href, 'manage_proj_edit_page.php')]"));
 
             foreach (IWebElement element in elements)
             {
-                list.Add(element.Text, element.GetAttribute("href").Split('=')[1]);
+                list.Add(new ProjectData()
+                {
+                    Name = element.Text,
+                    Id = element.GetAttribute("href").Split('=')[1]
+                });
             }
 
             return list;

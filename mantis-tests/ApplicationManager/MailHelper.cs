@@ -29,6 +29,7 @@ namespace mantis_tests
                     string messageBody = message.Body;
 
                     pop3Client.DeleteMessage(1);
+                    pop3Client.LogOut();
 
                     return messageBody;
                 }

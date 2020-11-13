@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 
 namespace mantis_tests
@@ -22,10 +23,16 @@ namespace mantis_tests
         {
             AccountData account = new AccountData()
             {
-                Name = "testuser9",
+                Name = "testuser1",
                 Password = "password",
-                Email = "testuser9@localhost.localdomain"
+                Email = "testuser1@localhost.localdomain"
             };
+
+            List<AccountData> accounts = applicationManager.AdminHelper.GetAccountList();
+            AccountData existingAccount = accounts.Find(x => x.Name == account.Name);
+
+            if (existingAccount != null)
+                applicationManager.AdminHelper.DeleteAccount(existingAccount);
 
             applicationManager.JamesHelper.Delete(account);
             applicationManager.JamesHelper.Add(account);

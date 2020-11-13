@@ -7,8 +7,9 @@ namespace mantis_tests
 {
     public class ApplicationManager
     {
+        protected string baseUrl;
+
         public IWebDriver Driver { get; }
-        public string BaseUrl { get; }
         public RegistrationHelper RegistrationHelper {get; set;}
         public FtpHelper FtpHelper { get; set; }
         public JamesHelper JamesHelper { get; set; }
@@ -17,13 +18,15 @@ namespace mantis_tests
         public ManagementMenuHelper ManagementMenuHelper { get; set; }
         public ProjectManagementHelper ProjectManagementHelper { get; set; }
         public MainMenuHelper MainMenuHelper { get; set; }
+        public AdminHelper AdminHelper { get; set; }
+        public ApiHelper ApiHelper { get; set; }
 
         private static readonly ThreadLocal<ApplicationManager> applicationManager = new ThreadLocal<ApplicationManager>();
 
         private ApplicationManager()
         {
             Driver = new FirefoxDriver();
-            BaseUrl = "http://localhost/addressbook";
+            baseUrl = "http://localhost/mantisbt-2.24.2";
             RegistrationHelper = new RegistrationHelper(this);
             FtpHelper = new FtpHelper(this);
             JamesHelper = new JamesHelper(this);
@@ -32,6 +35,8 @@ namespace mantis_tests
             ManagementMenuHelper = new ManagementMenuHelper(this);
             ProjectManagementHelper = new ProjectManagementHelper(this);
             MainMenuHelper = new MainMenuHelper(this);
+            AdminHelper = new AdminHelper(this, baseUrl);
+            ApiHelper = new ApiHelper(this);
         }
 
         public static ApplicationManager GetInstance()
@@ -39,7 +44,7 @@ namespace mantis_tests
             if (!applicationManager.IsValueCreated)
             {
                 ApplicationManager newInstance = new ApplicationManager();
-                newInstance.Driver.Url = "http://localhost/mantisbt-2.24.2/login_page.php";
+                newInstance.Driver.Url = newInstance.baseUrl + "/login_page.php";
                 applicationManager.Value = newInstance;
             }
 
