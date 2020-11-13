@@ -13,6 +13,10 @@ namespace mantis_tests
         public FtpHelper FtpHelper { get; set; }
         public JamesHelper JamesHelper { get; set; }
         public MailHelper MailHelper { get; set; }
+        public LoginHelper LoginHelper { get; set; }
+        public ManagementMenuHelper ManagementMenuHelper { get; set; }
+        public ProjectManagementHelper ProjectManagementHelper { get; set; }
+        public MainMenuHelper MainMenuHelper { get; set; }
 
         private static readonly ThreadLocal<ApplicationManager> applicationManager = new ThreadLocal<ApplicationManager>();
 
@@ -24,6 +28,10 @@ namespace mantis_tests
             FtpHelper = new FtpHelper(this);
             JamesHelper = new JamesHelper(this);
             MailHelper = new MailHelper(this);
+            LoginHelper = new LoginHelper(this);
+            ManagementMenuHelper = new ManagementMenuHelper(this);
+            ProjectManagementHelper = new ProjectManagementHelper(this);
+            MainMenuHelper = new MainMenuHelper(this);
         }
 
         public static ApplicationManager GetInstance()
