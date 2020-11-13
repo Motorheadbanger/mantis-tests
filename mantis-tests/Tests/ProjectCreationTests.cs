@@ -24,14 +24,14 @@ namespace mantis_tests
             applicationManager.MainMenuHelper.SwitchToManageTab();
             applicationManager.ManagementMenuHelper.SwitchToManageProjectsTab();
 
-            if (applicationManager.ProjectManagementHelper.Exists(project))
-                applicationManager.ProjectManagementHelper.Delete(project);
+            if (applicationManager.ProjectManagementHelper.Exists(project, admin))
+                applicationManager.ProjectManagementHelper.Delete(project, admin);
 
-            List<ProjectData> initialProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+            List<ProjectData> initialProjectList = applicationManager.ProjectManagementHelper.GetProjectList(admin);
 
             applicationManager.ProjectManagementHelper.Create(project);
 
-            List<ProjectData> modifiedProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+            List<ProjectData> modifiedProjectList = applicationManager.ProjectManagementHelper.GetProjectList(admin);
 
             initialProjectList.Add(project);
             initialProjectList.Sort();

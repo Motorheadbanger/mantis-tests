@@ -15,25 +15,21 @@ namespace mantis_tests
                 Password = "root"
             };
 
-            ProjectData project = new ProjectData()
-            {
-                Name = "Test Project"
-            };
-
             applicationManager.LoginHelper.Login(admin);
             applicationManager.MainMenuHelper.SwitchToManageTab();
             applicationManager.ManagementMenuHelper.SwitchToManageProjectsTab();
 
-            if (!applicationManager.ProjectManagementHelper.Exists(project))
-                applicationManager.ProjectManagementHelper.Create(project);
+            if (applicationManager.ApiHelper.GetProjectList(admin).Count == 0)
+                applicationManager.ApiHelper.Create("Emergency project", admin);
 
-            List<ProjectData> initialProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+            List<ProjectData> initialProjectList = applicationManager.ProjectManagementHelper.GetProjectList(admin);
+            ProjectData toBeRemoved = initialProjectList[0];
 
-            applicationManager.ProjectManagementHelper.Delete(project);
+            applicationManager.ProjectManagementHelper.Delete(toBeRemoved, admin);
 
-            List<ProjectData> modifiedProjectList = applicationManager.ProjectManagementHelper.GetProjectList();
+            List<ProjectData> modifiedProjectList = applicationManager.ProjectManagementHelper.GetProjectList(admin);
 
-            initialProjectList.Remove(project);
+            initialProjectList.Remove(toBeRemoved);
             initialProjectList.Sort();
             modifiedProjectList.Sort();
 

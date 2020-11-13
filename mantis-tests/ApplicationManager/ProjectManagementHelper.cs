@@ -19,9 +19,9 @@ namespace mantis_tests
             Thread.Sleep(3000);
         }
 
-        public void Delete(ProjectData project)
+        public void Delete(ProjectData project, AccountData account)
         {
-            List<ProjectData> list = GetProjectList();
+            List<ProjectData> list = GetProjectList(account);
 
             foreach (ProjectData item in list)
                 if (item.Name == project.Name)
@@ -33,28 +33,16 @@ namespace mantis_tests
             Thread.Sleep(500);
         }
 
-        public bool Exists(ProjectData project)
+        public bool Exists(ProjectData project, AccountData account)
         {
-            List<ProjectData> projectList = GetProjectList();
+            List<ProjectData> projectList = GetProjectList(account);
 
             return projectList.Contains(project);
         }
 
-        public List<ProjectData> GetProjectList()
+        public List<ProjectData> GetProjectList(AccountData account)
         {
-            List<ProjectData> list = new List<ProjectData>();
-            IList<IWebElement> elements = driver.FindElements(By.XPath("//a[contains(@href, 'manage_proj_edit_page.php')]"));
-
-            foreach (IWebElement element in elements)
-            {
-                list.Add(new ProjectData()
-                {
-                    Name = element.Text,
-                    Id = element.GetAttribute("href").Split('=')[1]
-                });
-            }
-
-            return list;
+            return applicationManager.ApiHelper.GetProjectList(account);
         }
     }
 }
